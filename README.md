@@ -19,7 +19,7 @@ Không cần root, không gỡ app nào của tivi, gỡ Home Dash ra là tivi v
 | **Samsung** (Tizen), **LG** (webOS) | **Không**: không phải Android |
 | **Amazon Fire TV** | Cài được như app, nhưng Fire OS không cho đổi màn hình chính |
 
-Đã thử thật trên Xiaomi TV S Mini LED 75 2025 (Google TV 14). Các máy khác chưa thử. Nếu bạn cài được (hoặc không), hãy mở một [Issue](../../issues) ghi tên model để mọi người cùng biết.
+Đã thử thật trên Xiaomi TV S Mini LED 75 2025 (Google TV 14), cài và gỡ bằng đúng script trong repo. Các máy khác chưa thử. Nếu bạn cài được (hoặc không), hãy mở một [Issue](../../issues) ghi tên model để mọi người cùng biết.
 
 **Lưu ý với Google TV:** trên nhiều máy, launcher gốc của Google giữ nút Home và không nhường cho app khác. Khi đó hãy làm [Bước 0](#bước-0-dọn-tivi-bằng-cleanyourtv-khuyên-dùng) trước.
 

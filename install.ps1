@@ -47,22 +47,27 @@ if (-not $Apk) {
 if (-not $Apk -or -not (Test-Path $Apk)) { Fail "không thấy file APK. Tải HomeDash.apk ở mục Releases trên GitHub, để cạnh file này." }
 
 $Target = @()
+# adb's own words only: in Windows PowerShell 5.1 a line on stderr would otherwise show up as a red
+# NativeCommandError with PowerShell's details around it.
+function AdbRun {
+    # A blank stderr line comes through as the bare text "System.Management.Automation.RemoteException".
+    $out = & $Adb @Target @args 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -ne "System.Management.Automation.RemoteException" }
+    return (($out -join "`n").Trim())
+}
+
+function Tv([string]$cmd) { return (AdbRun shell $cmd) }
+
 if ($TvIp) {
     if ($TvIp -notmatch ":") { $TvIp = "${TvIp}:5555" }
     Step "Kết nối tới tivi $TvIp (nếu tivi hỏi 'Cho phép gỡ lỗi', chọn Luôn cho phép rồi OK)"
-    & $Adb connect $TvIp | Out-Host
+    Write-Host (AdbRun connect $TvIp)
     $Target = @("-s", $TvIp)
-}
-
-function Tv([string]$cmd) {
-    $out = & $Adb @Target shell $cmd 2>&1 | Out-String
-    return $out.Trim()
 }
 
 # Chờ tivi cho phép (tối đa 60 giây).
 $ok = $false
 for ($i = 0; $i -lt 30; $i++) {
-    $state = (& $Adb @Target get-state 2>&1 | Out-String).Trim()
+    $state = AdbRun get-state
     if ($state -eq "device") { $ok = $true; break }
     Start-Sleep -Seconds 2
 }
@@ -73,11 +78,20 @@ $model = Tv "getprop ro.product.model"
 Step "Tivi: $model, Android SDK $sdk"
 if ($sdk -lt 26) { Fail "Home Dash cần Android 8.0 trở lên (SDK 26); tivi này là SDK $sdk." }
 
+# Home's owner before anything changes: installing another Home app makes Android drop the default, and the
+# answer turns into its chooser (android/...ResolverActivity), which is no place to send Home back to.
+$homeQuery = "cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME"
+$before = ((Tv $homeQuery) -split "`n")[-1].Trim()
+$record = Join-Path $Here ("previous-home-" + ($TvIp -replace "[^A-Za-z0-9._-]", "_") + ".txt")
+
 Step "Cài $([IO.Path]::GetFileName($Apk))"
-$res = & $Adb @Target install -r $Apk 2>&1 | Out-String
-Write-Host $res.Trim()
+$res = AdbRun install -r $Apk
+Write-Host $res
 if ($res -match "INSTALL_FAILED_UPDATE_INCOMPATIBLE") {
     Fail "trên tivi đã có một bản Home Dash ký bằng khóa khác. Gỡ bản cũ (.\uninstall.ps1) rồi cài lại."
+}
+if ($res -match "INSTALL_FAILED_VERSION_DOWNGRADE") {
+    Fail "trên tivi đang có bản Home Dash mới hơn file APK này. Tải bản mới nhất ở mục Releases."
 }
 if ($res -notmatch "Success") { Fail "cài không thành công (xem dòng trên)." }
 
@@ -88,7 +102,7 @@ if ($Wallpaper) {
     if (-not (Test-Path $Wallpaper)) { Fail "không thấy ảnh nền $Wallpaper" }
     Step "Chép ảnh nền"
     Tv "mkdir -p /sdcard/Android/data/$Pkg/files" | Out-Null
-    & $Adb @Target push $Wallpaper "/sdcard/Android/data/$Pkg/files/wallpaper.jpg" | Out-Host
+    Write-Host (AdbRun push $Wallpaper "/sdcard/Android/data/$Pkg/files/wallpaper.jpg")
 }
 
 if ($AppOnly) {
@@ -96,11 +110,10 @@ if ($AppOnly) {
     exit 0
 }
 
-$homeQuery = "cmd package resolve-activity --brief -a android.intent.action.MAIN -c android.intent.category.HOME"
-$before = ((Tv $homeQuery) -split "`n")[-1].Trim()
-$record = Join-Path $Here ("previous-home-" + ($TvIp -replace "[^A-Za-z0-9._-]", "_") + ".txt")
-if ($before -and $before -notlike "$Pkg/*") { Set-Content -Path $record -Value $before -Encoding ASCII }
-Step "Màn hình chính hiện tại: $before"
+if ($before -match "^[A-Za-z0-9_.]+/[A-Za-z0-9_.$]+$" -and $before -notlike "$Pkg/*" -and $before -notlike "android/*") {
+    Set-Content -Path $record -Value $before -Encoding ASCII
+    Step "Màn hình chính trước đó: $before (gỡ Home Dash sẽ trả về đây)"
+}
 
 # Mở thử trước khi giao nút Home: nếu app không mở được thì màn hình chính cũ vẫn giữ nguyên.
 $start = Tv "am start -W -a android.intent.action.MAIN -c android.intent.category.HOME -n $Main"

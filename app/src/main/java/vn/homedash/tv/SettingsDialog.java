@@ -248,7 +248,7 @@ final class SettingsDialog {
         if (w != null) {
             w.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             w.setGravity(Gravity.CENTER);
-            w.setDimAmount(0.45f);
+            w.setDimAmount(0.6f);
         }
         return d;
     }

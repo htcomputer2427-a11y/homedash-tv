@@ -59,11 +59,17 @@ sdk=$(tv 'getprop ro.build.version.sdk')
 step "Tivi: $(tv 'getprop ro.product.model'), Android SDK $sdk"
 [ "${sdk:-0}" -ge 26 ] || fail "Home Dash cần Android 8.0 trở lên (SDK 26); tivi này là SDK $sdk."
 
+# Home's owner before anything changes: installing another Home app makes Android drop the default, and the
+# answer turns into its chooser (android/...ResolverActivity), which is no place to send Home back to.
+before=$(tv "$HOME_QUERY" | tail -n 1)
+record="$HERE/previous-home-$(printf '%s' "$TV_IP" | tr -c 'A-Za-z0-9._-' '_').txt"
+
 step "Cài $(basename "$APK")"
 res=$("$ADB" ${TARGET[@]+"${TARGET[@]}"} install -r "$APK" 2>&1 || true)
 echo "$res"
 case "$res" in
   *INSTALL_FAILED_UPDATE_INCOMPATIBLE*) fail "trên tivi đã có một bản Home Dash ký bằng khóa khác. Gỡ bản cũ (./uninstall.sh) rồi cài lại." ;;
+  *INSTALL_FAILED_VERSION_DOWNGRADE*) fail "trên tivi đang có bản Home Dash mới hơn file APK này. Tải bản mới nhất ở mục Releases." ;;
   *Success*) ;;
   *) fail "cài không thành công (xem dòng trên)." ;;
 esac
@@ -83,10 +89,10 @@ if [ "$APP_ONLY" = 1 ]; then
   exit 0
 fi
 
-before=$(tv "$HOME_QUERY" | tail -n 1)
-record="$HERE/previous-home-$(printf '%s' "$TV_IP" | tr -c 'A-Za-z0-9._-' '_').txt"
-case "$before" in "$PKG"/*|"") ;; *) printf '%s\n' "$before" > "$record" ;; esac
-step "Màn hình chính hiện tại: $before"
+case "$before" in
+  "$PKG"/*|android/*|"") ;;
+  */*) printf '%s\n' "$before" > "$record"; step "Màn hình chính trước đó: $before (gỡ Home Dash sẽ trả về đây)" ;;
+esac
 
 # Mở thử trước khi giao nút Home: nếu app không mở được thì màn hình chính cũ vẫn giữ nguyên.
 start=$(tv "am start -W -a android.intent.action.MAIN -c android.intent.category.HOME -n $MAIN")

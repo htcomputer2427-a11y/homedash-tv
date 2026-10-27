@@ -25,14 +25,23 @@ if (-not $Adb) {
 if (-not $Adb) { Fail "không thấy adb (xem README, mục Chuẩn bị)." }
 
 $Target = @()
+# adb's own words only: in Windows PowerShell 5.1 a line on stderr would otherwise show up as a red
+# NativeCommandError with PowerShell's details around it.
+function AdbRun {
+    # A blank stderr line comes through as the bare text "System.Management.Automation.RemoteException".
+    $out = & $Adb @Target @args 2>&1 | ForEach-Object { "$_" } | Where-Object { $_ -ne "System.Management.Automation.RemoteException" }
+    return (($out -join "`n").Trim())
+}
+
+function Tv([string]$cmd) { return (AdbRun shell $cmd) }
+
 if ($TvIp) {
     if ($TvIp -notmatch ":") { $TvIp = "${TvIp}:5555" }
-    & $Adb connect $TvIp | Out-Host
+    Write-Host (AdbRun connect $TvIp)
     $Target = @("-s", $TvIp)
 }
-function Tv([string]$cmd) { return (& $Adb @Target shell $cmd 2>&1 | Out-String).Trim() }
 
-$state = (& $Adb @Target get-state 2>&1 | Out-String).Trim()
+$state = AdbRun get-state
 if ($state -ne "device") { Fail "chưa kết nối được tivi ($state)." }
 
 # Màn hình chính cũ: bản ghi lúc cài, nếu không có thì CleanYourTV hoặc launcher gốc còn bật.
@@ -52,7 +61,7 @@ if ($prev) {
 }
 
 Step "Gỡ Home Dash"
-$res = (& $Adb @Target uninstall $Pkg 2>&1 | Out-String).Trim()
+$res = AdbRun uninstall $Pkg
 Write-Host $res
 if ($res -notmatch "Success") { Fail "gỡ không thành công (xem dòng trên)." }
 if (Test-Path $record) { Remove-Item $record }

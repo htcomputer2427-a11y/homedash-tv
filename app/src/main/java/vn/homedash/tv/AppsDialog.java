@@ -65,7 +65,7 @@ final class AppsDialog {
         if (w != null) {
             w.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
             w.setGravity(Gravity.CENTER);
-            w.setDimAmount(0.45f);
+            w.setDimAmount(0.6f);
         }
         d.<TextView>findViewById(R.id.title).setText("Tất cả app");
         d.<TextView>findViewById(R.id.hint).setText(apps.size() + " app · OK để mở, Back để đóng");
