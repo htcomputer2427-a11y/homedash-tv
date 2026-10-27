@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The tile in a TV app list (320x180): the sunset background with the app icon in the middle. -->
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:drawable="@drawable/bg_sunset" />
+    <item
+        android:width="96dp"
+        android:height="96dp"
+        android:drawable="@drawable/ic_app"
+        android:gravity="center" />
+</layer-list>

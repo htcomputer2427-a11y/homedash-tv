@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A big app button and its mirror image; background, icon and label are set in DashboardActivity. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:layout_marginHorizontal="3dp"
+    android:clipChildren="false"
+    android:orientation="vertical">
+
+    <!-- 4dp on each side is the gap the focus ring draws in (btn_*.xml), so the face itself stays 128x60. -->
+    <LinearLayout
+        android:id="@+id/button"
+        android:layout_width="136dp"
+        android:layout_height="68dp"
+        android:focusable="true"
+        android:gravity="center"
+        android:orientation="vertical">
+
+        <ImageView
+            android:id="@+id/icon"
+            android:layout_width="30dp"
+            android:layout_height="26dp"
+            android:importantForAccessibility="no"
+            android:scaleType="fitCenter" />
+
+        <TextView
+            android:id="@+id/label"
+            style="@style/T.Bold"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="3dp"
+            android:textSize="14sp" />
+    </LinearLayout>
+
+    <vn.homedash.tv.Reflection
+        android:id="@+id/reflection"
+        android:layout_width="136dp"
+        android:layout_height="16dp" />
+</LinearLayout>

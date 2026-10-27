@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- The Top 100 picker, and the app list without CleanYourTV: a glass panel over Home. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="560dp"
+    android:layout_height="440dp"
+    android:background="@drawable/picker_bg"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/T.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Top 100 thịnh hành tuần này"
+        android:textSize="18sp" />
+
+    <TextView
+        android:id="@+id/hint"
+        style="@style/T.Dim"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="3dp"
+        android:text="YouTube Music Việt Nam · OK để phát, Back để đóng"
+        android:textSize="11sp" />
+
+    <ListView
+        android:id="@+id/list"
+        android:layout_width="match_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="10dp"
+        android:layout_weight="1"
+        android:divider="@null"
+        android:dividerHeight="3dp"
+        android:drawSelectorOnTop="false"
+        android:listSelector="@android:color/transparent"
+        android:scrollbarStyle="outsideOverlay" />
+</LinearLayout>

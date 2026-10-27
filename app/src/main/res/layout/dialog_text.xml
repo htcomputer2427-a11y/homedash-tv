@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Typing one line with the TV's on-screen keyboard: the greeting, or a town to look for. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="560dp"
+    android:layout_height="wrap_content"
+    android:background="@drawable/picker_bg"
+    android:orientation="vertical"
+    android:padding="16dp">
+
+    <TextView
+        android:id="@+id/title"
+        style="@style/T.Bold"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textSize="18sp" />
+
+    <EditText
+        android:id="@+id/input"
+        android:layout_width="match_parent"
+        android:layout_height="48dp"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/queue_row_bg"
+        android:fontFamily="@font/outfit_regular"
+        android:imeOptions="actionDone"
+        android:hint="Nhập ở đây"
+        android:importantForAutofill="no"
+        android:inputType="text|textCapSentences"
+        android:maxLength="80"
+        android:paddingHorizontal="14dp"
+        android:singleLine="true"
+        android:textColor="#FFFFFFFF"
+        android:textColorHint="#99FFFFFF"
+        android:textSize="15sp" />
+
+    <TextView
+        android:id="@+id/ok"
+        style="@style/T.Medium"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:layout_gravity="end"
+        android:layout_marginTop="12dp"
+        android:background="@drawable/pill_bg"
+        android:focusable="true"
+        android:gravity="center"
+        android:paddingHorizontal="22dp"
+        android:text="Lưu"
+        android:textColor="@color/pill_text"
+        android:textSize="14sp" />
+</LinearLayout>

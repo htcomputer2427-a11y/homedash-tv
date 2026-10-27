@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- One playlist entry: cover, title over artist, and the overflow dots. -->
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="0dp"
+    android:layout_weight="1"
+    android:layout_marginVertical="1.5dp"
+    android:background="@drawable/queue_row_bg"
+    android:focusable="true"
+    android:gravity="center_vertical"
+    android:orientation="horizontal"
+    android:paddingHorizontal="5dp">
+
+    <!-- Chart rank, shown only for the trending list. -->
+    <TextView
+        android:id="@+id/rank"
+        style="@style/T.Bold"
+        android:layout_width="18dp"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="#FFFFD54A"
+        android:textSize="11sp"
+        android:visibility="gone" />
+
+    <ImageView
+        android:id="@+id/thumb"
+        android:layout_width="26dp"
+        android:layout_height="26dp"
+        android:background="@drawable/art_bg"
+        android:scaleType="centerCrop"
+        android:src="@drawable/ic_note" />
+
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="7dp"
+        android:layout_weight="1"
+        android:orientation="vertical">
+
+        <TextView
+            android:id="@+id/title"
+            style="@style/T.Medium"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textSize="10.5sp" />
+
+        <TextView
+            android:id="@+id/subtitle"
+            style="@style/T.Dim"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="1dp"
+            android:textSize="9sp" />
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="12dp"
+        android:layout_height="12dp"
+        android:importantForAccessibility="no"
+        android:src="@drawable/ic_more" />
+</LinearLayout>

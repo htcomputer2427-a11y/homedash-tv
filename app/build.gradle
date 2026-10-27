@@ -1,0 +1,54 @@
+plugins {
+    id 'com.android.application'
+}
+
+// Release signing comes from keystore.properties (storeFile, storePassword, keyAlias, keyPassword), kept out of git.
+// Without it the release build is signed with the debug key, which is fine for a build you install yourself.
+def signing = new Properties()
+def signingFile = rootProject.file('keystore.properties')
+if (signingFile.exists()) signingFile.withInputStream { signing.load(it) }
+
+android {
+    namespace 'vn.homedash.tv'
+    compileSdk 34
+
+    defaultConfig {
+        applicationId 'vn.homedash.tv'
+        minSdk 26
+        targetSdk 34
+        versionCode 2
+        versionName '1.1.0'
+    }
+
+    signingConfigs {
+        release {
+            if (signing.storeFile) {
+                storeFile file(signing.storeFile)
+                storePassword signing.storePassword
+                keyAlias signing.keyAlias
+                keyPassword signing.keyPassword
+            }
+        }
+    }
+
+    buildTypes {
+        release {
+            minifyEnabled true
+            shrinkResources true
+            proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
+            // Sideloaded over ADB (install.ps1 / install.sh), not through the Play Store.
+            signingConfig signing.storeFile ? signingConfigs.release : signingConfigs.debug
+        }
+    }
+
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_17
+        targetCompatibility JavaVersion.VERSION_17
+    }
+}
+
+dependencies {
+    testImplementation 'junit:junit:4.13.2'
+    // Android ships org.json; JVM tests need the real thing instead of the android.jar stubs.
+    testImplementation 'org.json:json:20240303'
+}

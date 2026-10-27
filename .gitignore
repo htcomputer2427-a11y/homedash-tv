@@ -1,0 +1,19 @@
+# Build output and local machine paths
+.gradle/
+build/
+app/build/
+local.properties
+*.iml
+.idea/
+
+# Signing: never commit the release key or its passwords
+keystore.properties
+*.jks
+*.keystore
+
+# Whole pages saved from webgia.tv for RealPagesTest (their content, not ours)
+app/src/test/resources/webgia_*.html
+
+# A wallpaper you push to your own TV
+wallpaper/
+dist/

@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Defaults until the household picks its own in Settings (the gear on Home). The rest needs a rebuild (README.md). -->
+<resources>
+    <string name="app_name">Home Dash</string>
+    <!-- The line above the clock, shown exactly as written; changed in Settings. -->
+    <string name="greeting" translatable="false">Chào cả nhà!</string>
+    <!-- Weather: the place shown under the temperature and its coordinates for Open-Meteo; changed in Settings. -->
+    <string name="city" translatable="false">TP. Hồ Chí Minh</string>
+    <string name="latitude" translatable="false">10.7769</string>
+    <string name="longitude" translatable="false">106.7009</string>
+    <!-- The four buttons along the bottom. The last one opens the app grid (CleanYourTV's when it is installed). -->
+    <string name="pkg_youtube" translatable="false">com.google.android.youtube.tv</string>
+    <string name="pkg_netflix" translatable="false">com.netflix.ninja</string>
+    <string name="pkg_store" translatable="false">com.android.vending</string>
+    <!-- What the music card's play button opens while nothing is playing. -->
+    <string name="pkg_music" translatable="false">com.google.android.youtube.tvmusic</string>
+    <!-- Minutes between price and weather refreshes while Home is on screen. -->
+    <integer name="refresh_minutes">30</integer>
+</resources>

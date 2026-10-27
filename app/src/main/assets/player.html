@@ -1,0 +1,53 @@
+<!doctype html>
+<!-- The YouTube IFrame player inside Home Dash's music card. DashboardActivity drives it through the functions
+     below and hears back through the Dash bridge (WebPlayer.Bridge). -->
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+  html, body { margin: 0; height: 100%; background: #000; overflow: hidden; }
+  #p { width: 100%; height: 100%; }
+</style>
+</head>
+<body>
+<div id="p"></div>
+<script>
+  var player = null, ready = false, pending = null;
+
+  // ids: video ids in play order; YouTube plays them one after another.
+  function load(ids, index) { pending = [ids, index || 0]; if (ready) start(); }
+  function start() { var p = pending; pending = null; player.loadPlaylist({ playlist: p[0], index: p[1] }); }
+  function play() { if (player) player.playVideo(); }
+  function pause() { if (player) player.pauseVideo(); }
+  function next() { if (player) player.nextVideo(); }
+  function prev() { if (player) player.previousVideo(); }
+  function at(i) { if (player) player.playVideoAt(i); }
+
+  function report(state) {
+    var d = player.getVideoData ? player.getVideoData() : {};
+    var i = player.getPlaylistIndex ? player.getPlaylistIndex() : -1;
+    Dash.state(state, d.video_id || '', d.title || '', d.author || '', i);
+  }
+
+  function onYouTubeIframeAPIReady() {
+    player = new YT.Player('p', {
+      width: '100%', height: '100%',
+      playerVars: { autoplay: 1, controls: 0, disablekb: 1, fs: 0, iv_load_policy: 3, rel: 0, playsinline: 1,
+                    origin: location.origin },
+      events: {
+        onReady: function () { ready = true; Dash.ready(); if (pending) start(); },
+        onStateChange: function (e) { report(e.data); },
+        // 100 removed, 101/150 embedding not allowed by the owner, 2/5 bad id or HTML5 error: skip it.
+        onError: function (e) { Dash.error(e.data, player.getPlaylistIndex ? player.getPlaylistIndex() : -1); }
+      }
+    });
+  }
+
+  setInterval(function () {
+    if (player && player.getCurrentTime) Dash.progress(player.getCurrentTime() || 0, player.getDuration() || 0);
+  }, 1000);
+</script>
+<script src="https://www.youtube.com/iframe_api"></script>
+</body>
+</html>
